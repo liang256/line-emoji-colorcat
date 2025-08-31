@@ -5,7 +5,8 @@ import sys
 def find_fill_area(input_path, output_path,
                    fill_color=(255, 0, 255),
                    bg_color=(0, 255, 0),
-                   preview=False):
+                   preview=False,
+                   shrink=0):
     # 讀取 RGBA
     img = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
     if img is None:
@@ -30,34 +31,48 @@ def find_fill_area(input_path, output_path,
 
     max_contour = max(contours, key=cv2.contourArea)
 
+    # 建立 mask
+    mask = np.zeros((h, w), dtype=np.uint8)
+    cv2.drawContours(mask, [max_contour], -1, 255, thickness=cv2.FILLED)
+
+    # 縮小 mask
+    if shrink > 0:
+        kernel = np.ones((3, 3), np.uint8)
+        mask = cv2.erode(mask, kernel, iterations=shrink)
+
     if not preview:
         # === 正常模式：輸出黑白 mask ===
-        mask = np.zeros((h, w), dtype=np.uint8)
-        cv2.drawContours(mask, [max_contour], -1, 255, thickness=cv2.FILLED)
         cv2.imwrite(output_path, mask)
-        print(f"黑白 mask 已輸出: {output_path}")
+        print(f"黑白 mask 已輸出: {output_path} (shrink={shrink})")
         return
 
     # === 預覽模式：輸出彩色合成 ===
-    # 1. 背景 (RGB)
     result = np.zeros((h, w, 3), dtype=float)
     result[:] = bg_color
 
-    # 2. 填色
-    cv2.drawContours(result, [max_contour], -1, fill_color, thickness=cv2.FILLED)
+    # 用縮小後的 mask 填色
+    colored = result.copy()
+    colored[mask > 0] = fill_color
 
-    # 3. 疊加線條 (alpha blending)
+    # 疊加線條 (alpha blending)
     alpha = alpha[:, :, None]
-    result = alpha * line_rgb + (1 - alpha) * result
+    result = alpha * line_rgb + (1 - alpha) * colored
 
     result = result.astype(np.uint8)
     cv2.imwrite(output_path, result)
-    print(f"預覽合成結果已輸出: {output_path}")
+    print(f"預覽合成結果已輸出: {output_path} (shrink={shrink})")
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("用法: python find_fill_area.py input.png output.png [--preview]")
+        print("用法: python find_fill_area.py input.png output.png [--preview] [--shrink N]")
     else:
         preview = ("--preview" in sys.argv)
-        find_fill_area(sys.argv[1], sys.argv[2], preview=preview)
+        shrink = 0
+        for arg in sys.argv:
+            if arg.startswith("--shrink"):
+                parts = arg.split("=")
+                if len(parts) == 2:
+                    shrink = int(parts[1])
+
+        find_fill_area(sys.argv[1], sys.argv[2], preview=preview, shrink=shrink)
