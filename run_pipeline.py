@@ -8,8 +8,28 @@ import sys
 
 
 # === Step 1. 從 example 取顏色 ===
-def get_fill_color(example_path):
-    return (255, 255, 255)
+def get_fill_color(config_path):
+    """Parse fill color from config file"""
+    colors = {}
+
+    with open(config_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and ":" in line:
+                key, value = line.split(":", 1)
+                colors[key.strip()] = value.strip()
+
+    # Get fill color and convert hex to RGB
+    fill_hex = colors.get("fill", "#ffffff")
+    if fill_hex.startswith("#"):
+        fill_hex = fill_hex[1:]
+
+    # Convert hex to RGB tuple
+    r = int(fill_hex[0:2], 16)
+    g = int(fill_hex[2:4], 16)
+    b = int(fill_hex[4:6], 16)
+
+    return (r, g, b)
 
 
 def run_pipeline(color_config, lineart_dir, output_dir):
