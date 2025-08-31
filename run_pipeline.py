@@ -67,6 +67,6 @@ def run_pipeline(color_config, lineart_dir, output_dir):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("用法: python run_pipeline.py color.txt linearts_dir output_dir")
+        print("用法: python run_pipeline.py colors.txt linearts_dir output_dir")
     else:
         run_pipeline(sys.argv[1], sys.argv[2], sys.argv[3])
