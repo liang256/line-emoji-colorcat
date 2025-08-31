@@ -3,8 +3,10 @@ import numpy as np
 from collections import Counter
 import sys
 
+
 def rgb_to_hex(color):
     return "#{:02x}{:02x}{:02x}".format(int(color[2]), int(color[1]), int(color[0]))
+
 
 def parse_three_colors(input_path, bg_color=(0, 255, 0), out_file="colors.txt"):
     # 讀圖 (BGR)
@@ -33,7 +35,7 @@ def parse_three_colors(input_path, bg_color=(0, 255, 0), out_file="colors.txt"):
 
     # 計算亮度 (line color = 最暗)
     def brightness(c):  # BGR
-        return 0.299*c[2] + 0.587*c[1] + 0.114*c[0]
+        return 0.299 * c[2] + 0.587 * c[1] + 0.114 * c[0]
 
     # 找線條色 (最暗)
     line_color = min(unique_colors, key=brightness)
@@ -50,7 +52,7 @@ def parse_three_colors(input_path, bg_color=(0, 255, 0), out_file="colors.txt"):
     result = {
         "background": rgb_to_hex((bg_color[2], bg_color[1], bg_color[0])),  # BGR → Hex
         "line": rgb_to_hex(line_color),
-        "fill": rgb_to_hex(fill_color)
+        "fill": rgb_to_hex(fill_color),
     }
 
     # 寫檔
@@ -61,6 +63,7 @@ def parse_three_colors(input_path, bg_color=(0, 255, 0), out_file="colors.txt"):
     print("檢測結果：")
     for k, v in result.items():
         print(f"{k}: {v}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:

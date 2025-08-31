@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import sys
 
+
 def rgba_to_rgb_with_bg(input_path, output_path, bg_color=(0, 255, 0)):
     # 讀取 RGBA
     img = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
@@ -32,6 +33,7 @@ def rgba_to_rgb_with_bg(input_path, output_path, bg_color=(0, 255, 0)):
     # 儲存
     cv2.imwrite(output_path, result)
     print(f"已輸出 {output_path}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:

@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import sys
 
+
 def hex_to_rgb(hex_str: str):
     """把 '#RRGGBB' 或 'RRGGBB' 轉換成 (R,G,B)"""
     hex_str = hex_str.lstrip("#")
@@ -12,7 +13,8 @@ def hex_to_rgb(hex_str: str):
     b = int(hex_str[4:6], 16)
     return (r, g, b)
 
-def composite(lineart_path, mask_path, output_path, fill_color=(255,0,255)):
+
+def composite(lineart_path, mask_path, output_path, fill_color=(255, 0, 255)):
     # 讀取線稿 (RGBA)
     line_img = cv2.imread(lineart_path, cv2.IMREAD_UNCHANGED)
     if line_img is None or line_img.shape[2] != 4:
@@ -37,15 +39,16 @@ def composite(lineart_path, mask_path, output_path, fill_color=(255,0,255)):
     line_a = (line_img[:, :, 3].astype(float) / 255.0)[:, :, None]
 
     bg_rgb = result[:, :, :3]
-    bg_a   = (result[:, :, 3:4].astype(float) / 255.0)
+    bg_a = result[:, :, 3:4].astype(float) / 255.0
 
     out_rgb = line_a * line_rgb + (1 - line_a) * bg_rgb
-    out_a   = np.clip(line_a + bg_a * (1 - line_a), 0, 1)
+    out_a = np.clip(line_a + bg_a * (1 - line_a), 0, 1)
 
     result = np.dstack((out_rgb, out_a * 255)).astype(np.uint8)
 
     cv2.imwrite(output_path, result)
     print(f"合成結果已輸出: {output_path} (填色={fill_color})")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:

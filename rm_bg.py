@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import sys
 
+
 def remove_bg(input_path, output_path):
     # 讀取 RGB
     img = cv2.imread(input_path)
@@ -27,6 +28,7 @@ def remove_bg(input_path, output_path):
 
     cv2.imwrite(output_path, rgba)
     print(f"已輸出 {output_path} (背景轉透明)")
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:

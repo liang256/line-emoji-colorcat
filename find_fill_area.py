@@ -2,11 +2,15 @@ import cv2
 import numpy as np
 import sys
 
-def find_fill_area(input_path, output_path,
-                   fill_color=(255, 0, 255),
-                   bg_color=(0, 255, 0),
-                   preview=False,
-                   shrink=0):
+
+def find_fill_area(
+    input_path,
+    output_path,
+    fill_color=(255, 0, 255),
+    bg_color=(0, 255, 0),
+    preview=False,
+    shrink=0,
+):
     # 讀取 RGBA
     img = cv2.imread(input_path, cv2.IMREAD_UNCHANGED)
     if img is None:
@@ -65,9 +69,11 @@ def find_fill_area(input_path, output_path,
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("用法: python find_fill_area.py input.png output.png [--preview] [--shrink N]")
+        print(
+            "用法: python find_fill_area.py input.png output.png [--preview] [--shrink N]"
+        )
     else:
-        preview = ("--preview" in sys.argv)
+        preview = "--preview" in sys.argv
         shrink = 0
         for arg in sys.argv:
             if arg.startswith("--shrink"):
