@@ -14,20 +14,20 @@ def rgba_to_rgb_with_bg(input_path, output_path, bg_color=(0, 255, 0)):
     # 分離通道
     b, g, r, a = cv2.split(img)
 
-    # 建立背景 (RGB)
+    # 前景 RGB
+    foreground = cv2.merge([b, g, r]).astype(float)
+
+    # 背景 (RGB)
     h, w = img.shape[:2]
-    background = np.zeros((h, w, 3), dtype=np.uint8)
-    background[:] = bg_color  # 整張圖填充綠色
+    background = np.zeros((h, w, 3), dtype=float)
+    background[:] = bg_color
 
-    # 前景 (去掉 alpha)
-    foreground = cv2.merge([b, g, r])
+    # 正規化 alpha 到 [0,1]
+    alpha = (a.astype(float) / 255.0)[:, :, None]  # shape=(h,w,1)
 
-    # 建立 mask
-    mask = a > 0  # True=前景, False=透明
-
-    # 合成
-    result = background.copy()
-    result[mask] = foreground[mask]
+    # Alpha blending
+    result = alpha * foreground + (1 - alpha) * background
+    result = result.astype(np.uint8)
 
     # 儲存
     cv2.imwrite(output_path, result)
