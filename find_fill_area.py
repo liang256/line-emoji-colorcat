@@ -27,7 +27,8 @@ def find_fill_area(
     h, w = alpha.shape
 
     # 找最大輪廓 (填色區域)
-    _, thresh = cv2.threshold(a, 200, 255, cv2.THRESH_BINARY)
+    # 任何 alpha > 0 的像素都視為線條
+    _, thresh = cv2.threshold(a, 0, 255, cv2.THRESH_BINARY)
     contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     if not contours:
