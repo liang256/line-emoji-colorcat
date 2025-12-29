@@ -49,7 +49,7 @@ def run_pipeline(color_config, lineart_dir, output_dir):
 
         # Step 2. 產生 mask
         subprocess.run(
-            [sys.executable, "find_fill_area.py", path, tmp_mask, "--shrink=2"],
+            [sys.executable, "find_fill_area.py", path, tmp_mask, "--shrink=3"],
             check=True,
         )
 
