@@ -104,3 +104,5 @@ dmypy.json
 
 # pytype
 .pytype/
+# Archived past sticker/emoji sets (backed up elsewhere)
+archive/
